@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Search for stuff</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+
+    
+
+
+    <script type="text/javascript" src="//cdn.chitika.net/getads.js" async></script>
+    <script>
+    function getSuggestions() {
+        var userInput = $("#tbox").val();
+        
+        $.ajax({
+            type: "POST",
+            url: "QuerySuggest.asmx/suggest",
+            data: JSON.stringify({ input: userInput }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                var results = msg.d;
+                var removeBrackets = results.substr(1, results.length - 2);
+                var delimited = removeBrackets.split(",");
+
+                for (i = 0; i < delimited.length; i++) {
+                    var word = delimited[i];
+                    word = word.replace("\"", "");
+                    word = word.replace("\"", "");
+                $("#suggest" + i).text(word);
+                
+                }
+            },
+            error: function (msg) {
+                console.log("Error");
+            }
+        });
+    };
+    </script>
+
+
+    <script>
+    $(document).ready(function () {
+        
+        
+        $("#useJSONP").click(function () {
+            $.ajax({
+                url: 'http://ec2-52-11-136-33.us-west-2.compute.amazonaws.com/index.php',
+                data: {name: $("#tbox").val()},
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                jsonpCallback: 'jsonpCallback',
+                success: function () {
+                    alert("success");
+                }
+            });
+        });
+
+    });
+
+    function jsonpCallback(data) {
+
+
+        $('#jsonpResult').text("Name" + data.name);
+
+        if (data.name != "") {
+            $('#GP').text("GP: " + data.GP);
+            $('#FGP').text("FGP: " + data.FGP);
+            $('#TPP').text("TPP: " + data.TPP);
+            $('#FTP').text("FTP: " + data.FTP);
+            $('#PPG').text("PPG: " + data.PPG);
+        } 
+    }
+    </script>
+
+    <script>
+        function getTitles() {
+            var userInput = $("#tbox").val();
+            for (m = 0; m < 10; m++) {
+                $("#titles" + m).text("");
+            }
+            $.ajax({
+                type: "POST",
+                url: "QuerySuggest.asmx/searchTitle",
+                data: JSON.stringify({ input: userInput }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    
+                    var messages = msg.d;
+                    
+                    for (i = 0; i < messages.length; i++) {
+                        $("#titles"+ i).text(messages[i]);
+                    }
+                    var removeBrackets = messages.substr(1, messages.length - 2);
+
+                    $("#titles").text(removeBrackets);
+
+                },
+                error: function (msg) {
+                    console.log("Error");
+                }
+            });
+        }
+    </script>
+
+</head>
+<body>
+    <h3>Search for CNN articles and NBA Players</h3>
+    
+    
+
+    <input id="tbox" type="text" name="box" value="" onkeyup="getSuggestions()" />
+    <input type="button" id="useJSONP" value="Use JSONP" onclick="getTitles()">
+    <a href="http://kyleyuasapa4.cloudapp.net/dashboard.html"><input type="button" name="name" value="Dashboard" /></a>
+        <p>
+            <span id="jsonpResult"></span>
+            <span id="GP"></span>
+            <span id="FGP"></span>
+            <span id="TPP"></span>
+            <span id="FTP"></span>
+            <span id="PPG"></span>
+        </p>
+
+
+
+        <p id="suggest0"></p>
+        <p id="suggest1"></p>
+        <p id="suggest2"></p>
+        <p id="suggest3"></p>
+        <p id="suggest4"></p>
+        <p id="suggest5"></p>
+        <p id="suggest6"></p>
+        <p id="suggest7"></p>
+        <p id="suggest8"></p>
+        <p id="suggest9"></p>
+
+        <p id="titles0"></p>
+        <p id="titles1"></p>
+        <p id="titles2"></p>
+        <p id="titles3"></p>
+        <p id="titles4"></p>
+        <p id="titles5"></p>
+        <p id="titles6"></p>
+        <p id="titles7"></p>
+        <p id="titles8"></p>
+        <p id="titles9"></p>
+        <script type="text/javascript">
+
+            (function () {
+                if (window.CHITIKA === undefined) { window.CHITIKA = { 'units': [] }; };
+                var unit = { "calltype": "async[2]", "publisher": "Kylesagoodname", "width": 550, "height": 250, "sid": "Chitika Default" };
+                var placement_id = window.CHITIKA.units.length;
+                window.CHITIKA.units.push(unit);
+                document.write('<div id="chitikaAdBlock-' + placement_id + '"></div>');
+            }());
+        </script>
+
+</body>
+
+
+</html>

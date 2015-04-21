@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>My Search Page</title>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script>
+
+        function refresh() {
+            var userInput = "";
+
+            $.ajax({
+                type: "POST",
+                url: "admin.asmx/grabStats",
+                data: JSON.stringify({ input: userInput }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var messages = msg.d;
+                    var removeBrackets = messages.substr(1, messages.length - 2);
+
+                    $("#return" + 0).text(removeBrackets);
+                   
+
+
+                },
+                error: function (msg) {
+                    console.log("Error");
+                }
+            });
+
+            //ajax call to get recent adds
+            $.ajax({
+                type: "POST",
+                url: "admin.asmx/getRecentAdds",
+                data: JSON.stringify({ input: userInput }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var messages = msg.d;
+                    var removeBrackets = messages.substr(1, messages.length - 5);
+
+                    var delimited = removeBrackets.split('|');
+                    for (i = 0; i < delimited.length; i++) {
+                        var word = delimited[i];
+                        $("#adds" + i).text(word);
+                    }
+
+                },
+                error: function (msg) {
+                    console.log("Error");
+                }
+            });
+
+            //ajax to get errors
+            $.ajax({
+                type: "POST",
+                url: "admin.asmx/getRecentErrors",
+                data: JSON.stringify({ input: userInput }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var messages = msg.d;
+                    var removeBrackets = messages.substr(1, messages.length - 5);
+
+                    var delimited = removeBrackets.split('|');
+                    for (i = 0; i < delimited.length; i++) {
+                        var word = delimited[i];
+                        $("#error" + i).text(word);
+                    }
+                },
+                error: function (msg) {
+                    console.log("Error");
+                }
+            });
+        };
+    </script>
+
+    <script>
+        function search(htmlinput) {
+            var userInput = htmlinput;
+
+            $.ajax({
+                type: "POST",
+                url: "admin.asmx/getPageTitle",
+                data: JSON.stringify({ input: userInput }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var messages = msg.d;
+                    var removeQuotes = messages.substr(1, messages.length - 2);
+                    $("#searchResult").text(removeQuotes);
+
+
+                },
+                error: function (msg) {
+                    console.log("Error");
+                }
+            });
+        };
+    </script>
+
+
+    <script>
+        function clearCache() {
+
+            var userInput = "Clear";
+
+            $.ajax({
+                type: "POST",
+                url: "admin.asmx/addCommand",
+                data: JSON.stringify({ input: userInput }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var messages = msg.d;
+                    $("#Feedback").text(messages);
+                },
+                error: function (msg) {
+                    console.log("Error");
+                }
+            });
+        };
+
+    </script>
+
+
+    <script>
+        function stop() {
+
+            var userInput = "Stop";
+
+            $.ajax({
+                type: "POST",
+                url: "admin.asmx/addCommand",
+                data: JSON.stringify({ input: userInput }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var messages = msg.d;
+                    $("#Feedback").text(messages);
+                },
+                error: function (msg) {
+                    console.log("Error");
+                }
+            });
+        };
+
+    </script>
+
+    <script>
+        function start() {
+            var userInput = "Start";
+
+            $.ajax({
+                type: "POST",
+                url: "admin.asmx/addCommand",
+                data: JSON.stringify({ input: userInput }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var messages = msg.d;
+                    $("#Feedback").text(messages);
+                },
+                error: function (msg) {
+                    console.log("Error");
+                }
+            });
+        };
+
+    </script>
+
+    
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+
+    <input id="searchbox" type="text" name="Search For Title">
+    <input type="submit" name="" onclick="search(document.getElementById('searchbox').value)" />
+    <input type="submit" name="" value="Refresh Statistics" onclick="refresh()" />
+
+    <a href="http://kyleyuasapa4.cloudapp.net/index.html"><input type="button" name="name" value="Home" /></a>
+    <input type="submit" name="" value="Clear Table" onclick="clearCache()" />
+    <input type="submit" name="" value="Stop" onclick="stop()" />
+    <input type="submit" name="" value="Start" onclick="start()" />
+
+    <p id="searchResult"></p>
+
+    <h1>Stats (Click "Refresh Statistics" to view)</h1>
+    <p id="return0"></p>
+
+    <h1>Recently Added</h1>
+    <p id="adds0"></p>
+    <p id="adds1"></p>
+    <p id="adds2"></p>
+    <p id="adds3"></p>
+    <p id="adds4"></p>
+    <p id="adds5"></p>
+    <p id="adds6"></p>
+    <p id="adds7"></p>
+    <p id="adds8"></p>
+    <p id="adds9"></p>
+
+    <h1>Recent Errors</h1>
+    <p id="error0"></p>
+    <p id="error1"></p>
+    <p id="error2"></p>
+    <p id="error3"></p>
+    <p id="error4"></p>
+    <p id="error5"></p>
+    <p id="error6"></p>
+    <p id="error7"></p>
+    <p id="error8"></p>
+    <p id="error9"></p>
+
+
+    <p id="Feedback"></p>
+
+
+</body>
+</html>
